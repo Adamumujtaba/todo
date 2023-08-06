@@ -5,10 +5,10 @@ The ReactJS Todo List is a simple and intuitive web application that allows user
 Add, delete, and update tasks to keep track of your to-do list effectively.
 
 **Getting Started:**
-1. Clone the repository: `git clone https://github.com/your-username/react-todo-list.git`
+1. Clone the repository: `git clone https://github.com/adamumujtaba/todo.git`
 2. Install dependencies: `npm install`
 3. Run the development server: `npm start`
-4. Access the application in your web browser at `http://localhost:3000`
+4. Access the application in your web browser at `http://localhost:5173/`
 **Technologies Used:**
 - ReactJS
 - HTML5
