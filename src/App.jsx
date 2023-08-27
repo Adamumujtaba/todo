@@ -184,6 +184,7 @@ const AppCont = styled.div`
 
       button {
         font-size: medium;
+        margin-top: 3px;
       }
       button:hover {
         background: #758283;
