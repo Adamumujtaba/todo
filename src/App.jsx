@@ -9,6 +9,7 @@ import {
 } from "react-icons/md";
 import { FcCheckmark } from "react-icons/fc";
 import { PiCheckCircleFill } from "react-icons/pi";
+
 function App() {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState("");
@@ -17,14 +18,13 @@ function App() {
 
   useEffect(() => {
     const storedTodos = JSON.parse(localStorage.getItem("todos")) || [];
-
     setTodos(storedTodos);
   }, []);
 
   const AddTodo = () => {
     if (text === "") return;
     let todo = {
-      id: todos.length + 1,
+      id: Math.random().toFixed(3) * 1000,
       value: text,
       isDone: false,
     };
@@ -52,7 +52,6 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(Mark));
     setTodos(Mark);
   };
-
   return (
     <AppCont>
       <div className="form">
@@ -128,8 +127,15 @@ const AppCont = styled.div`
     display: flex;
     align-items: center;
     .add {
-      background: #000;
+      background: #fff;
+      color: #000;
       border: none;
+    }
+    .add:hover {
+      background: none;
+      color: #fff;
+      border: 1px solid #fff;
+      transition: all 0.3s ease-in-out;
     }
   }
   input {
