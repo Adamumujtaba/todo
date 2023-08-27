@@ -9,6 +9,7 @@ import {
 } from "react-icons/md";
 import { FcCheckmark } from "react-icons/fc";
 import { PiCheckCircleFill } from "react-icons/pi";
+import Typewriter from "typewriter-effect";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -84,10 +85,21 @@ function App() {
                 <section key={id}>
                   <div
                     style={{
+                      display: "flex",
                       textDecoration: isDone ? "line-through" : "",
                       fontStyle: isDone ? "italic" : "",
                     }}>
-                    {++index} {value}
+                    {++index},
+                    <div style={{ marginLeft: "10px" }}>
+                      <Typewriter
+                        options={{
+                          strings: value,
+                          autoStart: true,
+                          loop: false,
+                          cursor: "",
+                        }}
+                      />
+                    </div>
                   </div>
                   <div>
                     <button
@@ -100,6 +112,7 @@ function App() {
                       <MdDelete />
                     </button>
                     <button
+                      className="edit"
                       onClick={() => {
                         setEdit(true);
                         setCurrentItem({ value, id, isDone });
@@ -163,7 +176,6 @@ const AppCont = styled.div`
   }
   .todo {
     margin-top: 30px;
-
     section {
       display: flex;
       align-items: center;
@@ -173,19 +185,39 @@ const AppCont = styled.div`
       button {
         font-size: medium;
       }
+      button:hover {
+        background: #758283;
+        border: none;
+        transition: all 0.3s ease-in-out;
+      }
+
       .delete {
         color: red;
         background: #000;
-        border: none;
+        border: 1px dashed #758283;
       }
       .done {
         border: 1px solid #fff;
         color: green;
+      }
+      .done:hover {
+        border: 1px dashed #fff;
+        transition: all 1s ease-in-out;
       }
     }
   }
 
   @media screen and (max-width: 500px) {
     width: 90%;
+    section {
+      font-size: smaller;
+    }
+    .delete,
+    .done,
+    .edit {
+      font-size: smaller;
+      height: 70%;
+      padding: 2px;
+    }
   }
 `;
