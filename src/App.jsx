@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { styled } from "styled-components";
 import {
@@ -15,6 +15,12 @@ function App() {
   const [edit, setEdit] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
 
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+
+    setTodos(storedTodos);
+  }, []);
+
   const AddTodo = () => {
     if (text === "") return;
     let todo = {
@@ -22,17 +28,20 @@ function App() {
       value: text,
       isDone: false,
     };
+    localStorage.setItem("todos", JSON.stringify([...todos, todo]));
     setTodos((prev) => [...prev, todo]);
     setText("");
   };
   const DeleteTodo = (id) => {
     let deleteData = todos.filter((item) => item.id !== id);
+    localStorage.setItem("todos", JSON.stringify(deleteData));
     setTodos(deleteData);
   };
   const UpdateTodo = () => {
     let newData = todos.map((item) => {
       return item.id === currentItem.id ? currentItem : item;
     });
+    localStorage.setItem("todos", JSON.stringify(newData));
     setTodos(newData);
     setEdit(false);
   };
@@ -40,6 +49,7 @@ function App() {
     let Mark = todos.map((item) =>
       item.id === id ? { ...item, isDone: !item.isDone } : { ...item }
     );
+    localStorage.setItem("todos", JSON.stringify(Mark));
     setTodos(Mark);
   };
 
@@ -59,8 +69,7 @@ function App() {
 
         <button
           className="add"
-          onClick={() => (edit ? UpdateTodo() : AddTodo())}
-        >
+          onClick={() => (edit ? UpdateTodo() : AddTodo())}>
           {edit ? <MdUpdate /> : <MdOutlineAdd />}
         </button>
       </div>
@@ -78,16 +87,14 @@ function App() {
                     style={{
                       textDecoration: isDone ? "line-through" : "",
                       fontStyle: isDone ? "italic" : "",
-                    }}
-                  >
+                    }}>
                     {++index} {value}
                   </div>
                   <div>
                     <button
                       className="done"
                       style={{ background: isDone ? "#fff" : "none" }}
-                      onClick={() => ToggleTodo(id)}
-                    >
+                      onClick={() => ToggleTodo(id)}>
                       {isDone ? <PiCheckCircleFill /> : <FcCheckmark />}
                     </button>
                     <button className="delete" onClick={() => DeleteTodo(id)}>
@@ -97,8 +104,7 @@ function App() {
                       onClick={() => {
                         setEdit(true);
                         setCurrentItem({ value, id, isDone });
-                      }}
-                    >
+                      }}>
                       <MdOutlineEdit />
                     </button>
                   </div>
