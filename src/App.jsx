@@ -90,7 +90,7 @@ function App() {
                       fontStyle: isDone ? "italic" : "",
                     }}>
                     {++index},
-                    <div style={{ marginLeft: "10px" }}>
+                    <div style={{ marginLeft: "5px" }}>
                       <Typewriter
                         options={{
                           strings: value,
