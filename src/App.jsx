@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { styled } from "styled-components";
-import {
-  MdDelete,
-  MdOutlineAdd,
-  MdOutlineEdit,
-  MdUpdate,
-} from "react-icons/md";
-import { FcCheckmark } from "react-icons/fc";
-import { PiCheckCircleFill } from "react-icons/pi";
-import Typewriter from "typewriter-effect";
+import { MdOutlineAdd, MdUpdate, MdDelete } from "react-icons/md";
+
+import TodoList from "./TodoList";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -53,6 +47,14 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(Mark));
     setTodos(Mark);
   };
+  const checkedItems = todos.filter((item) => item.isDone === true);
+  const UnCheckedItems = todos.filter((item) => item.isDone === !true);
+
+  const ClearComplete = () => {
+    localStorage.setItem("todos", JSON.stringify(UnCheckedItems));
+    return setTodos(UnCheckedItems);
+  };
+
   return (
     <AppCont>
       <div className="form">
@@ -79,50 +81,32 @@ function App() {
           <h3>Add todo item </h3>
         ) : (
           <>
-            <h3>TODO LIST</h3>
-            <div>
-              {todos?.map(({ value, id, isDone }, index) => (
-                <section key={id}>
-                  <div
-                    style={{
-                      display: "flex",
-                      textDecoration: isDone ? "line-through" : "",
-                      fontStyle: isDone ? "italic" : "",
-                    }}>
-                    {++index},
-                    <div style={{ marginLeft: "5px" }}>
-                      <Typewriter
-                        options={{
-                          strings: value,
-                          autoStart: true,
-                          loop: false,
-                          cursor: "",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <button
-                      className="done"
-                      style={{ background: isDone ? "#fff" : "none" }}
-                      onClick={() => ToggleTodo(id)}>
-                      {isDone ? <PiCheckCircleFill /> : <FcCheckmark />}
-                    </button>
-                    <button className="delete" onClick={() => DeleteTodo(id)}>
-                      <MdDelete />
-                    </button>
-                    <button
-                      className="edit"
-                      onClick={() => {
-                        setEdit(true);
-                        setCurrentItem({ value, id, isDone });
-                      }}>
-                      <MdOutlineEdit />
-                    </button>
-                  </div>
-                </section>
-              ))}
-            </div>
+            <Header>
+              <h3>TODO LIST </h3>
+              {checkedItems.length ? (
+                <p className="sum">Completed {checkedItems.length}</p>
+              ) : null}
+              {UnCheckedItems.length ? (
+                <p className="sum">Uncompleted {UnCheckedItems.length}</p>
+              ) : null}
+              <p className="sum">
+                Total {UnCheckedItems.length + checkedItems.length}
+              </p>
+            </Header>
+            <TodoList
+              todos={todos}
+              DeleteTodo={DeleteTodo}
+              ToggleTodo={ToggleTodo}
+              setCurrentItem={setCurrentItem}
+              setEdit={setEdit}
+            />
+            {checkedItems.length ? (
+              <Footer>
+                <button onClick={() => ClearComplete()}>
+                  <MdDelete /> Completed
+                </button>
+              </Footer>
+            ) : null}
           </>
         )}
       </div>
@@ -220,5 +204,29 @@ const AppCont = styled.div`
       height: 70%;
       padding: 2px;
     }
+  }
+`;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 5px;
+  .sum {
+    font-size: small;
+  }
+  margin-bottom: 10px;
+`;
+const Footer = styled.div`
+  button {
+    background: red;
+    width: 100px;
+    font-size: small;
+    float: right;
+    margin: 20px 0px;
+    padding: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 `;
