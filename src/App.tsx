@@ -1,18 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, React } from "react";
 import "./App.css";
 import { styled } from "styled-components";
 import { MdOutlineAdd, MdUpdate, MdDelete } from "react-icons/md";
 
 import TodoList from "./TodoList";
 
+interface TodoItemProps {
+  value: string;
+  id: number;
+  isDone: boolean;
+}
+
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<TodoItemProps[]>([]);
   const [text, setText] = useState("");
   const [edit, setEdit] = useState(false);
-  const [currentItem, setCurrentItem] = useState({});
+  const [currentItem, setCurrentItem] = useState<TodoItemProps>({
+    value: "text",
+    id: 0,
+    isDone: false,
+  });
 
   useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    const storedTodosString: string | null = localStorage.getItem("todos");
+    const storedTodos = JSON.parse(storedTodosString || "[]");
     setTodos(storedTodos);
   }, []);
 
@@ -27,20 +38,20 @@ function App() {
     setTodos((prev) => [...prev, todo]);
     setText("");
   };
-  const DeleteTodo = (id) => {
+  const DeleteTodo = (id: number) => {
     let deleteData = todos.filter((item) => item.id !== id);
     localStorage.setItem("todos", JSON.stringify(deleteData));
     setTodos(deleteData);
   };
   const UpdateTodo = () => {
     let newData = todos.map((item) => {
-      return item.id === currentItem.id ? currentItem : item;
+      return item.id === currentItem?.id ? currentItem : item;
     });
     localStorage.setItem("todos", JSON.stringify(newData));
     setTodos(newData);
     setEdit(false);
   };
-  const ToggleTodo = (id) => {
+  const ToggleTodo = (id: number) => {
     let Mark = todos.map((item) =>
       item.id === id ? { ...item, isDone: !item.isDone } : { ...item }
     );
@@ -58,22 +69,31 @@ function App() {
   return (
     <AppCont>
       <div className="form">
-        <input
-          type="text"
-          value={edit ? currentItem.value : text}
-          onChange={(e) =>
-            edit
-              ? setCurrentItem((prev) => ({ ...prev, value: e.target.value }))
-              : setText(e.target.value)
-          }
-          placeholder="add item"
-        />
+        <div>
+          <input
+            type="text"
+            value={edit ? currentItem?.value : text}
+            onChange={(e) =>
+              edit
+                ? setCurrentItem((prev) => ({ ...prev, value: e.target.value }))
+                : setText(e.target.value)
+            }
+            placeholder="add item"
+          />
 
-        <button
-          className="add"
-          onClick={() => (edit ? UpdateTodo() : AddTodo())}>
-          {edit ? <MdUpdate /> : <MdOutlineAdd />}
-        </button>
+          <button
+            className="add"
+            onClick={() => (edit ? UpdateTodo() : AddTodo())}>
+            {edit ? <MdUpdate /> : <MdOutlineAdd />}
+          </button>
+        </div>
+        <div className="sum-cont">
+          {UnCheckedItems.length ? (
+            <p>Uncompleted {UnCheckedItems.length}</p>
+          ) : null}
+          {checkedItems.length ? <p>Completed {checkedItems.length}</p> : null}
+          {todos.length ? <p>Total {todos.length}</p> : null}
+        </div>
       </div>
 
       <div className="todo">
@@ -82,16 +102,9 @@ function App() {
         ) : (
           <>
             <Header>
-              <h3>TODO LIST </h3>
-              {checkedItems.length ? (
-                <p className="sum">Completed {checkedItems.length}</p>
-              ) : null}
-              {UnCheckedItems.length ? (
-                <p className="sum">Uncompleted {UnCheckedItems.length}</p>
-              ) : null}
-              <p className="sum">
-                Total {UnCheckedItems.length + checkedItems.length}
-              </p>
+              <div>
+                <h3>TODO LIST </h3>
+              </div>
             </Header>
             <TodoList
               todos={todos}
@@ -119,10 +132,11 @@ export default App;
 const AppCont = styled.div`
   width: 70%;
   margin: 100px auto;
-  .form {
+  .form div {
     height: 40px;
     display: flex;
     align-items: center;
+    position: relative;
     .add {
       background: #fff;
       color: #000;
@@ -134,6 +148,14 @@ const AppCont = styled.div`
       border: 1px solid #fff;
       transition: all 0.3s ease-in-out;
     }
+  }
+
+  .sum-cont {
+    display: flex;
+    justify-content: space-between;
+    width: 92%;
+    font-size: small;
+    margin: 5px 0px;
   }
   input {
     height: 75%;
@@ -211,9 +233,7 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 0px 5px;
-  .sum {
-    font-size: small;
-  }
+
   margin-bottom: 10px;
 `;
 const Footer = styled.div`
