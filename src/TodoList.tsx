@@ -80,15 +80,24 @@ function TodoList({
                 <button
                   className="done"
                   style={{ background: isDone ? "#fff" : "none" }}
-                  onClick={() => ToggleTodo(id)}>
+                  onClick={() => {
+                    handleToggleView(index);
+                    ToggleTodo(id);
+                  }}>
                   {isDone ? <PiCheckCircleFill /> : <FcCheckmark />}
                 </button>
-                <button className="delete" onClick={() => DeleteTodo(id)}>
+                <button
+                  className="delete"
+                  onClick={() => {
+                    handleToggleView(index);
+                    DeleteTodo(id);
+                  }}>
                   <MdDelete />
                 </button>
                 <button
                   className="edit"
                   onClick={() => {
+                    handleToggleView(index);
                     setEdit(true);
                     setCurrentItem({ value, id, isDone });
                   }}>
@@ -101,10 +110,18 @@ function TodoList({
                 <button
                   className="done"
                   style={{ background: isDone ? "#fff" : "none" }}
-                  onClick={() => ToggleTodo(id)}>
+                  onClick={() => {
+                    handleToggleView(index);
+                    ToggleTodo(id);
+                  }}>
                   {isDone ? <PiCheckCircleFill /> : <FcCheckmark />}
                 </button>
-                <button className="delete" onClick={() => DeleteTodo(id)}>
+                <button
+                  className="delete"
+                  onClick={() => {
+                    handleToggleView(index);
+                    DeleteTodo(id);
+                  }}>
                   <MdDelete />
                 </button>
                 <button
@@ -112,6 +129,7 @@ function TodoList({
                   onClick={() => {
                     setEdit(true);
                     setCurrentItem({ value, id, isDone });
+                    handleToggleView(index);
                   }}>
                   <MdOutlineEdit />
                 </button>
